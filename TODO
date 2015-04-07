@@ -4,3 +4,4 @@
 - Do LOWESS smoothing
 - Remove 0 value pitch.
 - Allow custom in/out directories.
+- Allow other segment types than syllable (i.e. user specified and e.g. phones)
