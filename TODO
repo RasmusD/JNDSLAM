@@ -1,0 +1,6 @@
+- Allow other input forms than HTS_lab
+- Make possible to define HTS_lab delimiters
+- Allow other algorithms than Simplified JNDSLAM
+- Do LOWESS smoothing
+- Remove 0 value pitch.
+- Allow custom in/out directories.

@@ -1,12 +1,16 @@
 # JNDSLAM
 A method for automatic pitch contour stylisation
 
-A note for reviewers. Well done for actually checking this!
+This version 0.01 features:
 
-You've caught us out. The implementation is not up yet.
+A simple method for stylising pitch contours based on the Just Noticeable Difference in pitch.
 
-It will be asap though!
+NOTE! This is incomplete! LOWESS smoothing is not yet implemented so the output is incorrect.
 
-Sincerely,
+To use:
 
-- Rasmus
+Unpack the tar.gz file and then the normal ./configure && make && make install should work.
+
+I recommend just ./configure && make and then running from the src dir.
+
+Any issues please mail rasmus@dall.dk
