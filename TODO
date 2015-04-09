@@ -1,6 +1,5 @@
 - Allow other input forms than HTS_lab
 - Make possible to define HTS_lab delimiters
 - Allow other algorithms than Simplified JNDSLAM
-- Do LOWESS smoothing
 - Allow custom in/out directories.
 - Allow other segment types than syllable (i.e. user specified and e.g. phones)

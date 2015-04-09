@@ -1,15 +1,15 @@
 # JNDSLAM
 A method for automatic pitch contour stylisation
 
-This version 0.02 features:
+This version 0.1 features:
 
 A simple method for stylising pitch contours based on the Just Noticeable Difference in pitch.
 
-NOTE! This is incomplete! LOWESS smoothing is not yet implemented so the output is technically incorrect. Though usable if you perform smoothing yourself.
+This is the Simplified JNDSLAM method as described in a paper submitted to Interspeech 2015 (Dall, R. & Gonzalvo, X. (2015). Automatic Stylisation and Labelling of Pitch Contour for Speech Synthesis. Submitted to Interspeech 2015, Dresden, Germany).
 
 To use:
 
-Unpack the tar.gz file and then the normal ./configure && make && make install should work.
+Clone the git repository and then the normal ./configure && make && make install should work.
 
 I recommend just ./configure && make.
 

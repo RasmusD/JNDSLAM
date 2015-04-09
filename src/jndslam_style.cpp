@@ -123,7 +123,7 @@ void stylise(std::vector<typename utterance::utterance> &utts)
       {
         tmp_syll->contour_extreme = "NOEXTREME";
       }
-      else if (abs(beg_diff) > abs(end_diff)) // Else are we closer to the beginning than end?
+      else if (abs(beg_diff) < abs(end_diff)) // Else are we closer to the beginning than end?
       {
         // If the diff is above 1.5 a positive extreme exists
         if (beg_diff >= 1.5)
@@ -176,12 +176,15 @@ float calc_mean_pitch(std::vector<typename utterance::utterance> &utts)
     {
       typename syllable::syllable *tmp_syll = &tmp_utt->sylls[j];
       // For each pitch value in the syllable
-      for (int z = 0; z < tmp_syll->pitch_values.size(); z++)
+      if (tmp_syll->pitch_values.size() > 0)
       {
-        if (tmp_syll->pitch_values[z][1] == 1)
+        for (int z = 0; z < tmp_syll->pitch_values.size(); z++)
         {
-          sum += tmp_syll->pitch_values[z][2];
-          count += 1;
+          if (tmp_syll->pitch_values[z][1] == 1)
+          {
+            sum = sum + tmp_syll->pitch_values[z][2];
+            count += 1;
+          }
         }
       }
     }
