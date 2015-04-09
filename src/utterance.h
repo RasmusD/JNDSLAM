@@ -20,10 +20,10 @@
 
 #include "syllable.h"
 
-class utterance
+struct utterance
 {
 public:
-  utterance(std::string name);
+  explicit utterance(std::string name);
   std::vector<typename syllable::syllable> sylls;
   std::string name;
 };
