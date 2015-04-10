@@ -17,6 +17,5 @@
 
 utterance::utterance(std::string name)
 {
-  std::vector<typename syllable::syllable>* sylls = new std::vector<typename syllable::syllable>();
   this->name = name;
-};
+}
