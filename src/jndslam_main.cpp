@@ -14,44 +14,84 @@
 
 #include "jndslam_main.h"
 
+void usage()
+{
+  std::cout << "Usage:" << std::endl;
+  std::cout << "-s/--nosmooth\tDo not smooth input f0 values." << std::endl;
+  std::cout << "-l/--labdir\tSpecify a custom .lab location. Default: data/lab/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
+  std::cout << "-p/--pitchdir\tSpecify a custom .f0 location. Default: data/pitch/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
+  std::cout << "-0/--outdir\tSpecify a custom output location. Default: data/out/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
+  std::cout << "-h/--help\tPrint this message." << std::endl;
+  std::exit(0);
+}
+
 int main(int argc, char *argv[])
 {
-  // Bools for command line options
-  bool smoothing = true;
+  // Global argument container
+  struct global_args_t {
+    bool smoothing;              // Are we smoothing?
+    std::string lab_path;        // Where can we find the .lab files?
+    std::string pitch_path;      // Where can we find the .f0 files?
+    std::string out_path;      // Where shall we put the output files?
+  } global_args;
+  
+  // Initialise global args to defaults
+  global_args.smoothing = true;
+  global_args.lab_path = "data/lab/";
+  global_args.pitch_path = "data/pitch/";
+  global_args.out_path = "data/out/";
+  
+  // Long options
+  static const struct option long_opts[] = {
+    { "nosmooth", no_argument, NULL, 's' }, // Do not perform smoothing
+    { "labdir", required_argument, NULL, 'l' }, // New lab dir
+    { "pitchdir", required_argument, NULL, 'p' }, // New pitch dir
+    { "outdir", required_argument, NULL, 'o' }, // New out dir
+    { "help", no_argument, NULL, 'h' } // Show usage()
+  };
+  
+  // Short options
+  static const char *opt_string = "sl:p:o:h";
+  
   // Parse command line options
   // cplusplus.com is down today so can't see their getopts tutorial.
   // Will change to use getopts later.
-  for (int i = 0; i < argc; i++)
+  int long_index = 0;
+  int opt = getopt_long(argc, argv, opt_string, long_opts, &long_index);
+  while (opt != -1)
   {
-    std::string arg(argv[i]);
-    // If it is a command
-    if (arg[0] == '-')
+    switch (opt)
     {
-      // Find which command
-      if (arg == "-nosmooth")
-      {
-        smoothing = false;
-      }
-      else if (arg == "-h" || arg == "-help")
-      {
+      case 's':
+        global_args.smoothing = false;
+        break;
+      case 'l':
+        global_args.lab_path = std::string(optarg);
+        break;
+      case 'p':
+        global_args.pitch_path = std::string(optarg);
+        break;
+      case 'o':
+        global_args.out_path = std::string(optarg);
+        break;
+      case 'h':
+      default:
         usage();
-        return 0;
-      }
-      else
-      {
-        std::cout << "Invalid option "+arg << std::endl;
-        usage();
-        return 0;
-      }
+        break;
     }
+    
+    opt = getopt_long(argc, argv, opt_string, long_opts, &long_index);
   }
-  // Open labs and pitch dirs
-  std::string lab_path = "data/lab/";
-  std::string pitch_path = "data/pitch/";
+  
+  std::cout << global_args.lab_path << std::endl;
+  std::cout << global_args.pitch_path << std::endl;
+  std::cout << global_args.out_path << std::endl;
+  
+  return 0;
   
   // Get a list of files
-  std::vector<std::string> lab_dir = list_dir(lab_path);
-  std::vector<std::string> pitch_dir = list_dir(pitch_path);
+  std::vector<std::string> lab_dir = list_dir(global_args.lab_path);
+  std::vector<std::string> pitch_dir = list_dir(global_args.pitch_path);
   
   // Prepare list of opened files
   std::vector<std::vector<std::string> > lab_files;
@@ -64,17 +104,17 @@ int main(int argc, char *argv[])
   for (int i = 0; i < lab_dir.size(); i++)
   {
     struct stat s;
-    if (stat((lab_path+lab_dir[i]).c_str(), &s) == 0)
+    if (stat((global_args.lab_path+lab_dir[i]).c_str(), &s) == 0)
     {
       // Is this a file?
       if(s.st_mode & S_IFREG)
       {
         // Open it
-        lab_files.push_back(open_file(lab_path+lab_dir[i]));
+        lab_files.push_back(open_file(global_args.lab_path+lab_dir[i]));
         // Find the basename
         std::string basename = split_string(lab_dir[i], '.')[0];
         // Try and open the corresponding pitch file.
-        std::string pitch_file_path = pitch_path+basename+".f0";
+        std::string pitch_file_path = global_args.pitch_path+basename+".f0";
         pitch_files.push_back(open_file(pitch_file_path));
         // If we found and opened the pitch file proceed and make an utterances
         typename utterance::utterance* utt = new typename utterance::utterance(basename);
@@ -96,7 +136,7 @@ int main(int argc, char *argv[])
   }
   
   // Smooth pitch for each segment if applicable
-  if (smoothing)
+  if (global_args.smoothing)
   {
     smooth_utts(utts);
   }
@@ -109,7 +149,7 @@ int main(int argc, char *argv[])
   stylise(utts);
   
   // Write output stylisation
-  write_utts_to_file(utts);
+  write_utts_to_file(utts, global_args.out_path);
   
   // Add style info to HTS lab and write lab
   // TODO
@@ -117,11 +157,4 @@ int main(int argc, char *argv[])
   // write_file()
   
   return 0;
-}
-
-void usage()
-{
-  std::cout << "Usage:" << std::endl;
-  std::cout << "-h/-help\tPrint this message." << std::endl;
-  std::cout << "-nosmooth\tDo not smooth input f0 values." << std::endl;
 }

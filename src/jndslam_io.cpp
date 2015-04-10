@@ -174,20 +174,20 @@ void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> 
 
 
 // Write out a file for each utterance with stylisations of each syllable line by line
-void write_utts_to_file(std::vector<typename utterance::utterance> &utts)
+void write_utts_to_file(std::vector<typename utterance::utterance> &utts,  std::string &out_path)
 {
   for (int i; i < utts.size(); i++)
   {
-    write_utt_to_file(utts[i]);
+    write_utt_to_file(utts[i], out_path);
   }
 }
 
 // Write out a file for a utterance with stylisations of each syllable line by line
-void write_utt_to_file(typename utterance::utterance &utt)
+void write_utt_to_file(typename utterance::utterance &utt, std::string &out_path)
 {
   std::ofstream out_file;
   // Note this won't work on windows. But I refuse to add e.g. Boost as a dependency just for safe path joining abilities.
-  out_file.open("data/out/" + utt.name + ".sty");
+  out_file.open(out_path + utt.name + ".sty");
   for (int i; i < utt.sylls.size(); i++)
   {
     typename syllable::syllable *tmp_syll = &utt.sylls.at(i);

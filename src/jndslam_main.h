@@ -15,6 +15,8 @@
 #ifndef JNDSLAM_MAIN_H
 #define JNDSLAM_MAIN_H
 
+#include <getopt.h>
+
 #include "jndslam_io.h"
 #include "jndslam_std.h"
 #include "jndslam_style.h"

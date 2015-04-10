@@ -45,9 +45,9 @@ void parse_est(typename utterance::utterance &utt, std::vector<std::string> &lin
 void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> &line_list);
 
 // Write out a file for each utterance with stylisations of each syllable line by line
-void write_utts_to_file(std::vector<typename utterance::utterance> &utts);
+void write_utts_to_file(std::vector<typename utterance::utterance> &utts, std::string &out_path);
 
 // Write out a file for a utterance with stylisations of each syllable line by line
-void write_utt_to_file(typename utterance::utterance &utts);
+void write_utt_to_file(typename utterance::utterance &utts, std::string &out_path);
 
 #endif
