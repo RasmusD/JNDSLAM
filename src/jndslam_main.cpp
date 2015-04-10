@@ -83,12 +83,6 @@ int main(int argc, char *argv[])
     opt = getopt_long(argc, argv, opt_string, long_opts, &long_index);
   }
   
-  std::cout << global_args.lab_path << std::endl;
-  std::cout << global_args.pitch_path << std::endl;
-  std::cout << global_args.out_path << std::endl;
-  
-  return 0;
-  
   // Get a list of files
   std::vector<std::string> lab_dir = list_dir(global_args.lab_path);
   std::vector<std::string> pitch_dir = list_dir(global_args.pitch_path);
