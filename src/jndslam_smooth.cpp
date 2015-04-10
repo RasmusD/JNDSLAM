@@ -221,7 +221,7 @@ void smooth(std::vector<std::vector<float> > &pitchs, float smoothing_span, unsi
   // Create a new pitchs with the calculated curve
   for (int i = 0; i < n; i++)
   {
-    std::cout << result[i] << std::endl;
+    //std::cout << result[i] << std::endl;
     new_pitch.push_back({(float)pitchs[x_vals[i]][0], 1, (float)result[i]});
   }
   pitchs.swap(new_pitch);
@@ -230,10 +230,10 @@ void smooth(std::vector<std::vector<float> > &pitchs, float smoothing_span, unsi
 // Smooth all sylls in an utt
 void smooth_utt(typename utterance::utterance &utt)
 {
-  std::cout << utt.name << std::endl;
+  //std::cout << utt.name << std::endl;
   for (int i = 0; i < utt.sylls.size(); i++)
   {
-    std::cout << "Syll " << utt.sylls[i].identity << " " << i << std::endl;
+    //std::cout << "Syll " << utt.sylls[i].identity << " " << i << std::endl;
     smooth(utt.sylls[i].pitch_values);
   }
 }
@@ -254,4 +254,27 @@ static double tricube(double x)
 {
   double tmp = 1 - abs(x) * abs(x) * abs(x);
   return tmp * tmp * tmp;
+}
+
+// Removes all unvoiced pitch values.
+// Used when not performing smoothing.
+void remove_unvoiced(std::vector<typename utterance::utterance> &utts)
+{
+  std::vector<std::vector<float> > new_pitchs;
+  for (int i = 0; i < utts.size(); i++)
+  {
+    for (int j = 0; j < utts[i].sylls.size(); j++)
+    {
+      new_pitchs.clear();
+      
+      for (int z = 0; z < utts[i].sylls[j].pitch_values.size(); z++)
+      {
+        if (utts[i].sylls[j].pitch_values[z][1] == 1)
+        {
+          new_pitchs.push_back(utts[i].sylls[j].pitch_values[z]);
+        }
+      }
+      utts[i].sylls[j].pitch_values.swap(new_pitchs);
+    }
+  }
 }

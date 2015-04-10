@@ -16,6 +16,35 @@
 
 int main(int argc, char *argv[])
 {
+  // Bools for command line options
+  bool smoothing = true;
+  // Parse command line options
+  // cplusplus.com is down today so can't see their getopts tutorial.
+  // Will change to use getopts later.
+  for (int i = 0; i < argc; i++)
+  {
+    std::string arg(argv[i]);
+    // If it is a command
+    if (arg[0] == '-')
+    {
+      // Find which command
+      if (arg == "-nosmooth")
+      {
+        smoothing = false;
+      }
+      else if (arg == "-h" || arg == "-help")
+      {
+        usage();
+        return 0;
+      }
+      else
+      {
+        std::cout << "Invalid option "+arg << std::endl;
+        usage();
+        return 0;
+      }
+    }
+  }
   // Open labs and pitch dirs
   std::string lab_path = "data/lab/";
   std::string pitch_path = "data/pitch/";
@@ -66,9 +95,15 @@ int main(int argc, char *argv[])
     parse_est(utts[i], pitch_files[i]);
   }
   
-  // Smooth pitch for each segment
-  // TODO Unfinishes
-  smooth_utts(utts);
+  // Smooth pitch for each segment if applicable
+  if (smoothing)
+  {
+    smooth_utts(utts);
+  }
+  else
+  {
+    remove_unvoiced(utts);
+  }
   
   // Stylise syllables
   stylise(utts);
@@ -82,4 +117,11 @@ int main(int argc, char *argv[])
   // write_file()
   
   return 0;
+}
+
+void usage()
+{
+  std::cout << "Usage:" << std::endl;
+  std::cout << "-h/-help\tPrint this message." << std::endl;
+  std::cout << "-nosmooth\tDo not smooth input f0 values." << std::endl;
 }

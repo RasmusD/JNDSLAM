@@ -192,7 +192,7 @@ float calc_mean_pitch(std::vector<typename utterance::utterance> &utts)
   
   if (count != 0)
   {
-    std::cout << "Mean pitch is " << sum/count << "\n";
+    //std::cout << "Mean pitch is " << sum/count << "\n";
     return sum/count;
   }
   else

@@ -41,6 +41,9 @@ void smooth_utt(typename utterance::utterance &utt);
 
 void smooth_utts(std::vector<typename utterance::utterance> &utts);
 
+// A method for removing unvoiced segments from the pitch values.
+void remove_unvoiced(std::vector<typename utterance::utterance> &utts);
+
 static double tricube(double x);
 
 #endif
