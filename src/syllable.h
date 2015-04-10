@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 
-class syllable
+struct syllable
 {
 public:
 	syllable(float start, float end, std::string identity);
