@@ -1,0 +1,22 @@
+Version 0.13 13/4-2015:
+- Added JNDSLAM algorithm
+- Added option to pick algorithm
+- Added changelog
+
+Version 0.12 10/4-2015:
+- Added option to choose in/out directories.
+- Bug fix.
+
+Version 0.11 10/4-2015:
+- Added option to skip smoothing.
+
+Version 0.1 9/4-2015:
+- Proper LOWESS smoothing added.
+- Simplified JNDSLAM now technically complete.
+
+Version 0.02 8/4-2015:
+- Added simple voicing removal.
+
+Version 0.01 7/4-2015:
+- Initial release.
+- Basic Simplified JNDSLAM with no smoothing and no voicing removal.

@@ -350,7 +350,7 @@ dist_pitch_DATA = data/pitch/arctic_a0001_1.f0 \
 outdir = data/out
 dist_out_DATA = data/out/NOTE
 extradir = .
-dist_extra_DATA = README.md LICENSE
+dist_extra_DATA = README.md LICENSE CHANGELOG
 all: all-am
 
 .SUFFIXES:

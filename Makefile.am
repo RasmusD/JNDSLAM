@@ -30,4 +30,4 @@ dist_out_DATA = data/out/NOTE
 
 extradir = .
 
-dist_extra_DATA = README.md LICENSE
+dist_extra_DATA = README.md LICENSE CHANGELOG

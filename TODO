@@ -2,9 +2,10 @@ High priority:
 - Allow other input forms than HTS_lab
 - Make possible to define HTS_lab delimiters
 - Allow other algorithms than Simplified JNDSLAM
-- Allow custom in/out directories.
 - Allow other segment types than syllable (i.e. user specified and e.g. phones)
 
 Lower priority:
 - A check should be added in write_utt_to_file to make sure output file was succesfully opened.
 - Make sure filepath joining is safe.
+- Check if in/out paths are valid.
+- Add option to change JND.

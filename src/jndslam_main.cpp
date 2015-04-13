@@ -17,6 +17,7 @@
 void usage()
 {
   std::cout << "Usage:" << std::endl;
+  std::cout << "-a/--algorithm\tSpecify stylisation algorithm. Options: simplified, jndslam. Default: simplified." << std::endl;
   std::cout << "-s/--nosmooth\tDo not smooth input f0 values." << std::endl;
   std::cout << "-l/--labdir\tSpecify a custom .lab location. Default: data/lab/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
   std::cout << "-p/--pitchdir\tSpecify a custom .f0 location. Default: data/pitch/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
@@ -30,12 +31,14 @@ int main(int argc, char *argv[])
   // Global argument container
   struct global_args_t {
     bool smoothing;              // Are we smoothing?
+    Style_Alg algorithm;              // Stylisation algorithm to use
     std::string lab_path;        // Where can we find the .lab files?
     std::string pitch_path;      // Where can we find the .f0 files?
     std::string out_path;      // Where shall we put the output files?
   } global_args;
   
   // Initialise global args to defaults
+  global_args.algorithm = SIMPLIFIED;
   global_args.smoothing = true;
   global_args.lab_path = "data/lab/";
   global_args.pitch_path = "data/pitch/";
@@ -43,6 +46,7 @@ int main(int argc, char *argv[])
   
   // Long options
   static const struct option long_opts[] = {
+    { "algorithm", required_argument, NULL, 'a' }, // Algorithm to use
     { "nosmooth", no_argument, NULL, 's' }, // Do not perform smoothing
     { "labdir", required_argument, NULL, 'l' }, // New lab dir
     { "pitchdir", required_argument, NULL, 'p' }, // New pitch dir
@@ -51,7 +55,7 @@ int main(int argc, char *argv[])
   };
   
   // Short options
-  static const char *opt_string = "sl:p:o:h";
+  static const char *opt_string = "a:sl:p:o:h";
   
   // Parse command line options
   // cplusplus.com is down today so can't see their getopts tutorial.
@@ -62,6 +66,21 @@ int main(int argc, char *argv[])
   {
     switch (opt)
     {
+      case 'a':
+        if (std::string(optarg) == "simplified")
+        {
+          global_args.algorithm = SIMPLIFIED;
+        }
+        else if (std::string(optarg) == "jndslam")
+        {
+          global_args.algorithm = JNDSLAM;
+        }
+        else
+        {
+          std::cout << "Invalid algorithm choice - " << optarg << ". Must be jndslam or simplified." << std::endl;
+          usage();
+        }
+        break;
       case 's':
         global_args.smoothing = false;
         break;
@@ -140,7 +159,7 @@ int main(int argc, char *argv[])
   }
   
   // Stylise syllables
-  stylise(utts);
+  stylise(utts, global_args.algorithm);
   
   // Write output stylisation
   write_utts_to_file(utts, global_args.out_path);

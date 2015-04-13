@@ -17,18 +17,29 @@
 
 #include <vector>
 #include <iostream>
+#include <stdexcept>
 
 #include <math.h>
 
 #include "utterance.h"
+#include "syllable.h"
+
+// The possible algorithms
+enum Style_Alg {SIMPLIFIED, JNDSLAM};
 
 // Stylise all syllables in a list of utterances
-void stylise(std::vector<typename utterance::utterance> &utts);
+void stylise(std::vector<typename utterance::utterance> &utts, Style_Alg algorithm=SIMPLIFIED);
 
 // Calculate the mean pitch of the speaker
 float calc_mean_pitch(std::vector<typename utterance::utterance> &utts);
 
 // Convert a pitch values to its semitone difference from a reference
 float f0_to_semitone(float &f0, float &mean_f0);
+
+// Style a syllable using Simplified JNDSLAM
+void style_simplified(typename syllable::syllable &syll);
+
+// Style a syllable using JNDSLAM
+void style_jndslam(typename syllable::syllable &syll);
 
 #endif

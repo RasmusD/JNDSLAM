@@ -16,7 +16,7 @@
 
 // Stylise all syllables in a list of utterances
 // Note that we assume unvoiced segments have already been removed
-void stylise(std::vector<typename utterance::utterance> &utts)
+void stylise(std::vector<typename utterance::utterance> &utts, Style_Alg algorithm)
 {
   // Get the mean f0 of the speaker
   float mean_pitch = calc_mean_pitch(utts);
@@ -51,110 +51,19 @@ void stylise(std::vector<typename utterance::utterance> &utts)
         }
       }
       
-      // Apply label to start position
-      float start_pitch = tmp_syll->pitch_values.front()[2];
-      if (start_pitch >= 1.5)
+      if (algorithm == SIMPLIFIED)
       {
-        tmp_syll->contour_start = "HIGH";
+        style_simplified(*tmp_syll);
       }
-      else if (start_pitch > -1.5)
+      else if (algorithm == JNDSLAM)
       {
-        tmp_syll->contour_start = "MEDIUM";
+        style_jndslam(*tmp_syll);
       }
       else
       {
-        tmp_syll->contour_start = "LOW";
+        throw std::invalid_argument("This should never happen! The enum is - "+std::to_string(algorithm)+" - but it is not an option!");
       }
       
-      // Apply label to direction
-      float direction_value = tmp_syll->pitch_values.back()[2] - tmp_syll->pitch_values.front()[2];
-      if (direction_value >= 1.5)
-      {
-        tmp_syll->contour_direction = "UP";
-      }
-      else if (direction_value > -1.5)
-      {
-        tmp_syll->contour_direction = "STRAIGHT";
-      }
-      else
-      {
-        tmp_syll->contour_direction = "DOWN";
-      }
-      
-      // Apply label to extreme
-      float max = -1000;
-      int max_pos = -1;
-      float min = 1000;
-      int min_pos = -1;
-      float extreme_val = 0;
-      float extreme_pos = -1;
-      // Get max/min values and pos
-      for (int i = 0; i < tmp_syll->pitch_values.size(); i++)
-      {
-        if (tmp_syll->pitch_values.at(i)[2] > max)
-        {
-          max = tmp_syll->pitch_values.at(i)[2];
-          max_pos = i;
-        }
-        if (tmp_syll->pitch_values.at(i)[2] < min)
-        {
-          min = tmp_syll->pitch_values.at(i)[2];
-          min_pos = i;
-        }
-      }
-      // Find largest of max/min
-      if (abs(min) > max)
-      {
-        extreme_val = min;
-        extreme_pos = min_pos;
-      }
-      else
-      {
-        extreme_val = max;
-        extreme_pos = max_pos;
-      }
-      
-      // Find if extreme is closer to beginning or end
-      float beg_diff = extreme_val - tmp_syll->pitch_values.front()[2];
-      float end_diff = extreme_val - tmp_syll->pitch_values.back()[2];
-      
-      // If an extreme is exactly at the end or beginning there is no extreme
-      if (extreme_pos == 0 || extreme_pos == tmp_syll->pitch_values.size() - 1)
-      {
-        tmp_syll->contour_extreme = "NOEXTREME";
-      }
-      else if (abs(beg_diff) < abs(end_diff)) // Else are we closer to the beginning than end?
-      {
-        // If the diff is above 1.5 a positive extreme exists
-        if (beg_diff >= 1.5)
-        {
-          tmp_syll->contour_extreme = "POSITIVE";
-        }
-        else if (beg_diff <= -1.5) // If below -1.5 a negative
-        {
-          tmp_syll->contour_extreme = "NEGATIVE";
-        }
-        else // Else none exist
-        {
-          tmp_syll->contour_extreme = "NOEXTREME";
-        }
-      }
-      else // We are closer to the end
-      {
-        // If the diff is above 1.5 a positive extreme exists
-        if (end_diff >= 1.5)
-        {
-          tmp_syll->contour_extreme = "POSITIVE";
-        }
-        else if (end_diff <= -1.5) // If below -1.5 a negative
-        {
-          tmp_syll->contour_extreme = "NEGATIVE";
-        }
-        else // Else none exist
-        {
-          tmp_syll->contour_extreme = "NOEXTREME";
-        }
-      }
     }
   }
 }
@@ -205,4 +114,255 @@ float f0_to_semitone(float &f0, float &mean_f0)
 {
   float semitones = 12*log2(f0/mean_f0);
   return semitones;
+}
+
+void style_simplified(typename syllable::syllable &syll)
+{
+  // Apply label to start position
+  float start_pitch = syll.pitch_values.front()[2];
+  if (start_pitch >= 1.5)
+  {
+    syll.contour_start = "HIGH";
+  }
+  else if (start_pitch > -1.5)
+  {
+    syll.contour_start = "MEDIUM";
+  }
+  else
+  {
+    syll.contour_start = "LOW";
+  }
+  
+  // Apply label to direction
+  float direction_value = syll.pitch_values.back()[2] - syll.pitch_values.front()[2];
+  if (direction_value >= 1.5)
+  {
+    syll.contour_direction = "UP";
+  }
+  else if (direction_value > -1.5)
+  {
+    syll.contour_direction = "STRAIGHT";
+  }
+  else
+  {
+    syll.contour_direction = "DOWN";
+  }
+  
+  // Apply label to extreme
+  float max = -1000;
+  int max_pos = -1;
+  float min = 1000;
+  int min_pos = -1;
+  float extreme_val = 0;
+  float extreme_pos = -1;
+  // Get max/min values and pos
+  for (int i = 0; i < syll.pitch_values.size(); i++)
+  {
+    if (syll.pitch_values.at(i)[2] > max)
+    {
+      max = syll.pitch_values.at(i)[2];
+      max_pos = i;
+    }
+    if (syll.pitch_values.at(i)[2] < min)
+    {
+      min = syll.pitch_values.at(i)[2];
+      min_pos = i;
+    }
+  }
+  // Find largest of max/min
+  if (abs(min) > max)
+  {
+    extreme_val = min;
+    extreme_pos = min_pos;
+  }
+  else
+  {
+    extreme_val = max;
+    extreme_pos = max_pos;
+  }
+  
+  // Find if extreme is closer to beginning or end
+  float beg_diff = extreme_val - syll.pitch_values.front()[2];
+  float end_diff = extreme_val - syll.pitch_values.back()[2];
+  
+  // If an extreme is exactly at the end or beginning there is no extreme
+  if (extreme_pos == 0 || extreme_pos == syll.pitch_values.size() - 1)
+  {
+    syll.contour_extreme = "NO_EXTREME";
+  }
+  else if (abs(beg_diff) < abs(end_diff)) // Else are we closer to the beginning than end?
+  {
+    // If the diff is above 1.5 a positive extreme exists
+    if (beg_diff >= 1.5)
+    {
+      syll.contour_extreme = "POSITIVE";
+    }
+    else if (beg_diff <= -1.5) // If below -1.5 a negative
+    {
+      syll.contour_extreme = "NEGATIVE";
+    }
+    else // Else none exist
+    {
+      syll.contour_extreme = "NO_EXTREME";
+    }
+  }
+  else // We are closer to the end
+  {
+    // If the diff is above 1.5 a positive extreme exists
+    if (end_diff >= 1.5)
+    {
+      syll.contour_extreme = "POSITIVE";
+    }
+    else if (end_diff <= -1.5) // If below -1.5 a negative
+    {
+      syll.contour_extreme = "NEGATIVE";
+    }
+    else // Else none exist
+    {
+      syll.contour_extreme = "NO_EXTREME";
+    }
+  }
+}
+
+void style_jndslam(typename syllable::syllable &syll)
+{
+  // Apply label to start position
+  float start_pitch = syll.pitch_values.front()[2];
+  if (start_pitch >= 4.5)
+  {
+    syll.contour_start = "VERY_HIGH";
+  }
+  else if (start_pitch >= 1.5)
+  {
+    syll.contour_start = "HIGH";
+  }
+  else if (start_pitch > -1.5)
+  {
+    syll.contour_start = "MEDIUM";
+  }
+  else if (start_pitch > -4.5)
+  {
+    syll.contour_start = "LOW";
+  }
+  else
+  {
+    syll.contour_start = "VERY_LOW";
+  }
+  
+  // Apply label to direction
+  float direction_value = syll.pitch_values.back()[2] - syll.pitch_values.front()[2];
+  if (direction_value >= 4.5)
+  {
+    syll.contour_direction = "VERY_UP";
+  }
+  if (direction_value >= 1.5)
+  {
+    syll.contour_direction = "UP";
+  }
+  else if (direction_value > -1.5)
+  {
+    syll.contour_direction = "STRAIGHT";
+  }
+  else if (direction_value > -4.5)
+  {
+    syll.contour_direction = "DOWN";
+  }
+  else
+  {
+    syll.contour_direction = "VERY_DOWN";
+  }
+  
+  // Apply label to extreme
+  float max = -1000;
+  int max_pos = -1;
+  float min = 1000;
+  int min_pos = -1;
+  float extreme_val = 0;
+  float extreme_pos = -1;
+  // Get max/min values and pos
+  for (int i = 0; i < syll.pitch_values.size(); i++)
+  {
+    if (syll.pitch_values.at(i)[2] > max)
+    {
+      max = syll.pitch_values.at(i)[2];
+      max_pos = i;
+    }
+    if (syll.pitch_values.at(i)[2] < min)
+    {
+      min = syll.pitch_values.at(i)[2];
+      min_pos = i;
+    }
+  }
+  // Find largest of max/min
+  if (abs(min) > max)
+  {
+    extreme_val = min;
+    extreme_pos = min_pos;
+  }
+  else
+  {
+    extreme_val = max;
+    extreme_pos = max_pos;
+  }
+  
+  // Find if extreme is closer to beginning or end
+  float beg_diff = extreme_val - syll.pitch_values.front()[2];
+  float end_diff = extreme_val - syll.pitch_values.back()[2];
+  
+  
+  std::string extreme = "";
+  // Find position in syllable
+  float pos = (float)extreme_pos / (float)syll.pitch_values.size();
+  if (pos >= 0.7)
+  {
+    extreme += "END_";
+  }
+  else if (pos <= 0.3)
+  {
+    extreme += "BEGINNING_";
+  }
+  else
+  {
+    extreme += "MIDDLE_";
+  }
+  
+  // If an extreme is exactly at the end or beginning there is no extreme
+  if (extreme_pos == 0 || extreme_pos == syll.pitch_values.size() - 1)
+  {
+    extreme = "NO_EXTREME";
+  }
+  else if (abs(beg_diff) < abs(end_diff)) // Else are we closer to the beginning than end?
+  {
+    // If the diff is above 1.5 a positive extreme exists
+    if (beg_diff >= 1.5)
+    {
+      extreme += "POSITIVE";
+    }
+    else if (beg_diff <= -1.5) // If below -1.5 a negative
+    {
+      extreme += "NEGATIVE";
+    }
+    else // Else none exist
+    {
+      extreme = "NO_EXTREME";
+    }
+  }
+  else // We are closer to the end
+  {
+    // If the diff is above 1.5 a positive extreme exists
+    if (end_diff >= 1.5)
+    {
+      extreme += "POSITIVE";
+    }
+    else if (end_diff <= -1.5) // If below -1.5 a negative
+    {
+      extreme += "NEGATIVE";
+    }
+    else // Else none exist
+    {
+      extreme = "NO_EXTREME";
+    }
+  }
+  // Add the final contour
+  syll.contour_extreme = extreme;
 }
