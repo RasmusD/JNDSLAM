@@ -1,7 +1,7 @@
 # JNDSLAM
 A method for automatic pitch contour stylisation
 
-This version 0.12 features:
+This version 0.13 features:
 
 A simple method for stylising pitch contours based on the Just Noticeable Difference in pitch.
 
