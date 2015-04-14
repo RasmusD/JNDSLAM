@@ -1,7 +1,6 @@
 High priority:
 - Allow other input forms than HTS_lab
 - Make possible to define HTS_lab delimiters
-- Allow other algorithms than Simplified JNDSLAM
 - Allow other segment types than syllable (i.e. user specified and e.g. phones)
 
 Lower priority:
@@ -9,3 +8,5 @@ Lower priority:
 - Make sure filepath joining is safe.
 - Check if in/out paths are valid.
 - Add option to change JND.
+- Add option to set minimal number of voiced frames.
+- Allow output of extreme position seperately from extreme value

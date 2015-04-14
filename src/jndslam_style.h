@@ -25,7 +25,7 @@
 #include "syllable.h"
 
 // The possible algorithms
-enum Style_Alg {SIMPLIFIED, JNDSLAM};
+enum Style_Alg {SIMPLIFIED, JNDSLAM, SLAM};
 
 // Stylise all syllables in a list of utterances
 void stylise(std::vector<typename utterance::utterance> &utts, Style_Alg algorithm=SIMPLIFIED);
@@ -41,5 +41,12 @@ void style_simplified(typename syllable::syllable &syll);
 
 // Style a syllable using JNDSLAM
 void style_jndslam(typename syllable::syllable &syll);
+
+// Style a syllable using the original SLAM algorithm from
+// Obin, N., Beliao, J., Veaux, C., & Lacheret, A. (2014). SLAM: Automatic Stylization and Labelling of Speech Melody. Speech Prosody 7, 246-250.
+void style_slam(typename syllable::syllable &syll);
+
+// Convert a semitone to its register value in 5 levels based on split.
+std::string semitone_to_register(float semitone, float split);
 
 #endif

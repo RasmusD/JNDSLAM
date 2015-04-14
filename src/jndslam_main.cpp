@@ -17,7 +17,7 @@
 void usage()
 {
   std::cout << "Usage:" << std::endl;
-  std::cout << "-a/--algorithm\tSpecify stylisation algorithm. Options: simplified, jndslam. Default: simplified." << std::endl;
+  std::cout << "-a/--algorithm\tSpecify stylisation algorithm. Options: simplified, jndslam, slam. Default: simplified." << std::endl;
   std::cout << "-s/--nosmooth\tDo not smooth input f0 values." << std::endl;
   std::cout << "-l/--labdir\tSpecify a custom .lab location. Default: data/lab/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
   std::cout << "-p/--pitchdir\tSpecify a custom .f0 location. Default: data/pitch/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
@@ -58,8 +58,6 @@ int main(int argc, char *argv[])
   static const char *opt_string = "a:sl:p:o:h";
   
   // Parse command line options
-  // cplusplus.com is down today so can't see their getopts tutorial.
-  // Will change to use getopts later.
   int long_index = 0;
   int opt = getopt_long(argc, argv, opt_string, long_opts, &long_index);
   while (opt != -1)
@@ -75,9 +73,13 @@ int main(int argc, char *argv[])
         {
           global_args.algorithm = JNDSLAM;
         }
+        else if (std::string(optarg) == "slam")
+        {
+          global_args.algorithm = SLAM;
+        }
         else
         {
-          std::cout << "Invalid algorithm choice - " << optarg << ". Must be jndslam or simplified." << std::endl;
+          std::cout << "Invalid algorithm choice - " << optarg << ". Must be jndslam, slam or simplified." << std::endl;
           usage();
         }
         break;

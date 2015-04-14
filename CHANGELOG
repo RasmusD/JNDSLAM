@@ -1,3 +1,7 @@
+Version 0.2 14/4-2015:
+- Added original SLAM algorithm
+- All algorithms initial intended to be supported now supported.
+
 Version 0.13 13/4-2015:
 - Added JNDSLAM algorithm
 - Added option to pick algorithm
