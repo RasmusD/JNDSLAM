@@ -1,7 +1,7 @@
 # JNDSLAM
 A method for automatic pitch contour stylisation
 
-This version 0.2 features:
+This version 0.3 features:
 
 A simple method for stylising pitch contours based on the Just Noticeable Difference in pitch.
 
@@ -15,10 +15,12 @@ Clone the git repository and then the normal ./configure && make && make install
 
 I recommend just ./configure && make.
 
-To run simply run the created binary jndslam. It takes the .lab files in data/lab opens and parses them and tries to open and parse a corresponding .f0 in data/pitch. Output is written to data/out as .sty files (simply tab delimited lines, one per syllable).
+To run simply run the created binary jndslam. The default settings takes the .lab files in data/simple_lab opens and parses them and tries to open and parse a corresponding .f0 in data/pitch. Output is written to data/out as .sty files (simply space delimited lines, one per segment).
 
 A few command line options exist use -h or --help to get the options.
 
-Simply replace the .f0 and .lab files with your own to use those. Please be aware that .f0 files are assumed to be in EST format and .lab in HTS Full context label. The example .lab files may differ from the standard HTS implementation. Support for other formats will be provided asap.
+Simply replace the .f0 and .lab files with your own to use those. Please be aware that .f0 files are assumed to be in EST format.
+
+Input in HTS full-context label format is also supported. Sample files are in data/hts_lab/. Please note that the example .lab files may differ from the standard HTS implementation and only supports syllable stylisation. Support for arbitrary HTS full context label formats with options for other segment types is underway. If you wish to stylise other segments than syllables please use the simple_lab format.
 
 Any issues please mail rasmus@dall.dk

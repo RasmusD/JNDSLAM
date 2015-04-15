@@ -44,6 +44,11 @@ void parse_est(typename utterance::utterance &utt, std::vector<std::string> &lin
 // Parse an HTS style label list and add sylls to an utterance
 void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> &line_list);
 
+// Parse a simple space-delimited label list and add sylls to an utterance
+// Format for each line is:
+// start_time_in_seconds end_time_in_seconds segment_id
+void parse_simple_lab(typename utterance::utterance &utt, std::vector<std::string> &line_list);
+
 // Write out a file for each utterance with stylisations of each syllable line by line
 void write_utts_to_file(std::vector<typename utterance::utterance> &utts, std::string &out_path);
 

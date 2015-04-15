@@ -1,7 +1,7 @@
 High priority:
-- Allow other input forms than HTS_lab
 - Make possible to define HTS_lab delimiters
-- Allow other segment types than syllable (i.e. user specified and e.g. phones)
+- Allow other segment types from hts_labs than syllable (i.e. user specified and e.g. phones)
+- Add option to output marked up HTS_lab if input was HTS_lab style.
 
 Lower priority:
 - A check should be added in write_utt_to_file to make sure output file was succesfully opened.
@@ -9,4 +9,6 @@ Lower priority:
 - Check if in/out paths are valid.
 - Add option to change JND.
 - Add option to set minimal number of voiced frames.
-- Allow output of extreme position seperately from extreme value
+- Allow output of extreme position seperately from extreme value.
+- Check well formedness of hts_lab input.
+- Change syllable.cpp/.h to segment.cpp/.h

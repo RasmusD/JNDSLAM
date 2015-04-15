@@ -1,3 +1,11 @@
+Version 0.3 15/4-2015:
+- Supports arbitrary segment type (maximal size == full audio file) through simple space delimited input.
+- Changed output style to match simple input style, i.e. space delimited with style at end.
+- Changed data/lab dir to data/hts_lab dir.
+- Added data/simple_lab dir.
+- Default input type is now simple input with data/simple_lab/ default input lab.
+- When listing directory contents now checks for, and ignores, backup files ending with '~'.
+
 Version 0.2 14/4-2015:
 - Added original SLAM algorithm
 - All algorithms initial intended to be supported now supported.

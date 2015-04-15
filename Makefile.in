@@ -95,16 +95,17 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cxx_compile_stdcxx_0x.m4 \
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
-	$(am__configure_deps) $(dist_extra_DATA) $(dist_lab_DATA) \
-	$(dist_out_DATA) $(dist_pitch_DATA) $(am__DIST_COMMON)
+	$(am__configure_deps) $(dist_extra_DATA) $(dist_htslab_DATA) \
+	$(dist_out_DATA) $(dist_pitch_DATA) $(dist_simplelab_DATA) \
+	$(am__DIST_COMMON)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(extradir)" \
-	"$(DESTDIR)$(labdir)" "$(DESTDIR)$(outdir)" \
-	"$(DESTDIR)$(pitchdir)"
+	"$(DESTDIR)$(htslabdir)" "$(DESTDIR)$(outdir)" \
+	"$(DESTDIR)$(pitchdir)" "$(DESTDIR)$(simplelabdir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
 am_jndslam_OBJECTS = src/jndslam_main.$(OBJEXT) \
@@ -188,8 +189,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-DATA = $(dist_extra_DATA) $(dist_lab_DATA) $(dist_out_DATA) \
-	$(dist_pitch_DATA)
+DATA = $(dist_extra_DATA) $(dist_htslab_DATA) $(dist_out_DATA) \
+	$(dist_pitch_DATA) $(dist_simplelab_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -337,10 +338,15 @@ jndslam_SOURCES = src/jndslam_main.cpp src/jndslam_main.h \
   src/jndslam_smooth.cpp src/jndslam_smooth.h \
   src/jndslam_style.cpp src/jndslam_style.h
 
-labdir = data/lab
-dist_lab_DATA = data/lab/arctic_a0001_1.lab \
-  data/lab/arctic_a0002_1.lab \
-  data/lab/arctic_a0003_1.lab
+simplelabdir = data/simple_lab
+dist_simplelab_DATA = data/simple_lab/arctic_a0001_1.lab \
+  data/simple_lab/arctic_a0002_1.lab \
+  data/simple_lab/arctic_a0003_1.lab
+
+htslabdir = data/hts_lab
+dist_htslab_DATA = data/hts_lab/arctic_a0001_1.lab \
+  data/hts_lab/arctic_a0002_1.lab \
+  data/hts_lab/arctic_a0003_1.lab
 
 pitchdir = data/pitch
 dist_pitch_DATA = data/pitch/arctic_a0001_1.f0 \
@@ -506,27 +512,27 @@ uninstall-dist_extraDATA:
 	@list='$(dist_extra_DATA)'; test -n "$(extradir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(extradir)'; $(am__uninstall_files_from_dir)
-install-dist_labDATA: $(dist_lab_DATA)
+install-dist_htslabDATA: $(dist_htslab_DATA)
 	@$(NORMAL_INSTALL)
-	@list='$(dist_lab_DATA)'; test -n "$(labdir)" || list=; \
+	@list='$(dist_htslab_DATA)'; test -n "$(htslabdir)" || list=; \
 	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(labdir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(labdir)" || exit 1; \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(htslabdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(htslabdir)" || exit 1; \
 	fi; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(labdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(labdir)" || exit $$?; \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(htslabdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(htslabdir)" || exit $$?; \
 	done
 
-uninstall-dist_labDATA:
+uninstall-dist_htslabDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(dist_lab_DATA)'; test -n "$(labdir)" || list=; \
+	@list='$(dist_htslab_DATA)'; test -n "$(htslabdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(labdir)'; $(am__uninstall_files_from_dir)
+	dir='$(DESTDIR)$(htslabdir)'; $(am__uninstall_files_from_dir)
 install-dist_outDATA: $(dist_out_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(dist_out_DATA)'; test -n "$(outdir)" || list=; \
@@ -569,6 +575,27 @@ uninstall-dist_pitchDATA:
 	@list='$(dist_pitch_DATA)'; test -n "$(pitchdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(pitchdir)'; $(am__uninstall_files_from_dir)
+install-dist_simplelabDATA: $(dist_simplelab_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(dist_simplelab_DATA)'; test -n "$(simplelabdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(simplelabdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(simplelabdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(simplelabdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(simplelabdir)" || exit $$?; \
+	done
+
+uninstall-dist_simplelabDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(dist_simplelab_DATA)'; test -n "$(simplelabdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(simplelabdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -796,7 +823,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(extradir)" "$(DESTDIR)$(labdir)" "$(DESTDIR)$(outdir)" "$(DESTDIR)$(pitchdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(extradir)" "$(DESTDIR)$(htslabdir)" "$(DESTDIR)$(outdir)" "$(DESTDIR)$(pitchdir)" "$(DESTDIR)$(simplelabdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -854,8 +881,9 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_extraDATA install-dist_labDATA \
-	install-dist_outDATA install-dist_pitchDATA
+install-data-am: install-dist_extraDATA install-dist_htslabDATA \
+	install-dist_outDATA install-dist_pitchDATA \
+	install-dist_simplelabDATA
 
 install-dvi: install-dvi-am
 
@@ -903,8 +931,8 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-dist_extraDATA \
-	uninstall-dist_labDATA uninstall-dist_outDATA \
-	uninstall-dist_pitchDATA
+	uninstall-dist_htslabDATA uninstall-dist_outDATA \
+	uninstall-dist_pitchDATA uninstall-dist_simplelabDATA
 
 .MAKE: install-am install-strip
 
@@ -916,17 +944,18 @@ uninstall-am: uninstall-binPROGRAMS uninstall-dist_extraDATA \
 	distclean-tags distcleancheck distdir distuninstallcheck dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-binPROGRAMS install-data install-data-am \
-	install-dist_extraDATA install-dist_labDATA \
-	install-dist_outDATA install-dist_pitchDATA install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-dist_extraDATA uninstall-dist_labDATA \
-	uninstall-dist_outDATA uninstall-dist_pitchDATA
+	install-dist_extraDATA install-dist_htslabDATA \
+	install-dist_outDATA install-dist_pitchDATA \
+	install-dist_simplelabDATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-dist_extraDATA \
+	uninstall-dist_htslabDATA uninstall-dist_outDATA \
+	uninstall-dist_pitchDATA uninstall-dist_simplelabDATA
 
 .PRECIOUS: Makefile
 

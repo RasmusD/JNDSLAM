@@ -12,11 +12,17 @@ jndslam_SOURCES = src/jndslam_main.cpp src/jndslam_main.h \
   src/jndslam_smooth.cpp src/jndslam_smooth.h \
   src/jndslam_style.cpp src/jndslam_style.h
 
-labdir = data/lab
+simplelabdir = data/simple_lab
 
-dist_lab_DATA = data/lab/arctic_a0001_1.lab \
-  data/lab/arctic_a0002_1.lab \
-  data/lab/arctic_a0003_1.lab
+dist_simplelab_DATA = data/simple_lab/arctic_a0001_1.lab \
+  data/simple_lab/arctic_a0002_1.lab \
+  data/simple_lab/arctic_a0003_1.lab
+
+htslabdir = data/hts_lab
+
+dist_htslab_DATA = data/hts_lab/arctic_a0001_1.lab \
+  data/hts_lab/arctic_a0002_1.lab \
+  data/hts_lab/arctic_a0003_1.lab
 
 pitchdir = data/pitch
 

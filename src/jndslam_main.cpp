@@ -17,11 +17,12 @@
 void usage()
 {
   std::cout << "Usage:" << std::endl;
-  std::cout << "-a/--algorithm\tSpecify stylisation algorithm. Options: simplified, jndslam, slam. Default: simplified." << std::endl;
+  std::cout << "-a/--algorithm [alg]\tSpecify stylisation algorithm. Options: simplified, jndslam, slam. Default: simplified." << std::endl;
   std::cout << "-s/--nosmooth\tDo not smooth input f0 values." << std::endl;
-  std::cout << "-l/--labdir\tSpecify a custom .lab location. Default: data/lab/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
-  std::cout << "-p/--pitchdir\tSpecify a custom .f0 location. Default: data/pitch/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
-  std::cout << "-0/--outdir\tSpecify a custom output location. Default: data/out/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
+  std::cout << "-i/--intype [type]\tSpecify input type. Options: hts, simple. Default: simple." << std::endl;
+  std::cout << "-l/--labdir [path]\tSpecify a custom .lab location. Default: data/simple_lab/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
+  std::cout << "-p/--pitchdir [path]\tSpecify a custom .f0 location. Default: data/pitch/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
+  std::cout << "-0/--outdir [path]\tSpecify a custom output location. Default: data/out/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
   std::cout << "-h/--help\tPrint this message." << std::endl;
   std::exit(0);
 }
@@ -32,6 +33,7 @@ int main(int argc, char *argv[])
   struct global_args_t {
     bool smoothing;              // Are we smoothing?
     Style_Alg algorithm;              // Stylisation algorithm to use
+    std::string lab_type;        // What type of input are we receiving?
     std::string lab_path;        // Where can we find the .lab files?
     std::string pitch_path;      // Where can we find the .f0 files?
     std::string out_path;      // Where shall we put the output files?
@@ -40,7 +42,8 @@ int main(int argc, char *argv[])
   // Initialise global args to defaults
   global_args.algorithm = SIMPLIFIED;
   global_args.smoothing = true;
-  global_args.lab_path = "data/lab/";
+  global_args.lab_type = "simple";
+  global_args.lab_path = "data/simple_lab/";
   global_args.pitch_path = "data/pitch/";
   global_args.out_path = "data/out/";
   
@@ -48,6 +51,7 @@ int main(int argc, char *argv[])
   static const struct option long_opts[] = {
     { "algorithm", required_argument, NULL, 'a' }, // Algorithm to use
     { "nosmooth", no_argument, NULL, 's' }, // Do not perform smoothing
+    { "intype", required_argument, NULL, 'i' }, // Input type
     { "labdir", required_argument, NULL, 'l' }, // New lab dir
     { "pitchdir", required_argument, NULL, 'p' }, // New pitch dir
     { "outdir", required_argument, NULL, 'o' }, // New out dir
@@ -55,7 +59,7 @@ int main(int argc, char *argv[])
   };
   
   // Short options
-  static const char *opt_string = "a:sl:p:o:h";
+  static const char *opt_string = "a:si:l:p:o:h";
   
   // Parse command line options
   int long_index = 0;
@@ -85,6 +89,21 @@ int main(int argc, char *argv[])
         break;
       case 's':
         global_args.smoothing = false;
+        break;
+      case 'i':
+        if (std::string(optarg) == "simple")
+        {
+          global_args.lab_type = optarg;
+        }
+        else if (std::string(optarg) == "hts")
+        {
+          global_args.lab_type = optarg;
+        }
+        else
+        {
+          std::cout << "Invalid input type - " << optarg << ". Must be simple or hts." << std::endl;
+          usage();
+        }
         break;
       case 'l':
         global_args.lab_path = std::string(optarg);
@@ -138,10 +157,21 @@ int main(int argc, char *argv[])
     }
   }
   
-  // Add syllable info to utterance from HTS lab file
+  // Add segment info to utterance from input lab file
   for (int i = 0; i < utts.size(); i++)
   {
-    parse_hts_lab(utts[i], lab_files[i]);
+    if (global_args.lab_type == "simple")
+    {
+      parse_simple_lab(utts[i], lab_files[i]);
+    }
+    else if (global_args.lab_type == "hts")
+    {
+      parse_hts_lab(utts[i], lab_files[i]);
+    }
+    else
+    {
+      throw std::invalid_argument("Input type is of urecognised type "+global_args.lab_type+". Exiting.");
+    }
   }
   
   // Add pitch information to utterance from EST file

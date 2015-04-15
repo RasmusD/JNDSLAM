@@ -39,7 +39,16 @@ std::vector<std::string> list_dir(std::string dir)
 
   while ((dirp = readdir(dr)) != NULL)
   {
-    files.push_back(std::string(dirp->d_name));
+    // Check for files ending with ~
+    std::string tmp = std::string(dirp->d_name);
+    if (tmp.back() == '~')
+    {
+      continue;
+    }
+    else
+    {
+      files.push_back(tmp);
+    }
   }
   closedir(dr);
   return files;
@@ -134,7 +143,7 @@ void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> 
   {
     // Split it in times and context
     tmp_vec = split_string(line_list[i], ' ');
-    // Just a silly check to make sure we're not trying something weird... which we are.
+    // Just a silly check to make sure we're not trying something weird... which we are. this also gets rid of empty lines.
     if (tmp_vec.size() != 3)
     {
       continue;
@@ -172,6 +181,45 @@ void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> 
   }
 }
 
+// Parse a simple space-delimited label list and add segments to an utterance
+// Format for each line is:
+// start_time_in_seconds end_time_in_seconds segment_name
+void parse_simple_lab(typename utterance::utterance &utt, std::vector<std::string> &line_list)
+{
+  // For string splitting
+  std::vector<std::string> tmp_vec;
+  
+  // For storing tmp segment info
+  float segment_start;
+  float segment_end;
+  
+  // Go through each line and get the relevant details for each phone
+  for (int i = 0; i < line_list.size(); i++)
+  {
+    // Split it in times and context
+    tmp_vec = split_string(line_list[i], ' ');
+    // Just a check to make sure we have the correct number of items.
+    if (tmp_vec.size() != 3)
+    {
+      // We don't want to make a fuss if it is just an empty line.
+      if (line_list[i] == "")
+      {
+        continue;
+      }
+      else
+      {
+        std::cout << "WARNING! Line " << i+1 << " in " << utt.name << " is malformed. Skipping..." << std::endl;
+        continue;
+      }
+    }
+    // Get phone start and end time
+    segment_start = std::atof(tmp_vec[0].c_str());
+    segment_end = std::atof(tmp_vec[1].c_str());
+    typename syllable::syllable syll = *new typename syllable::syllable(segment_start, segment_end, tmp_vec[2]);
+    utt.sylls.push_back(syll);
+  }
+}
+
 
 // Write out a file for each utterance with stylisations of each syllable line by line
 void write_utts_to_file(std::vector<typename utterance::utterance> &utts,  std::string &out_path)
@@ -191,12 +239,11 @@ void write_utt_to_file(typename utterance::utterance &utt, std::string &out_path
   for (int i; i < utt.sylls.size(); i++)
   {
     typename syllable::syllable *tmp_syll = &utt.sylls.at(i);
-    out_file << tmp_syll->identity << "\t";
-    out_file << tmp_syll->start << "\t";
-    out_file << tmp_syll->end << "\t";
-    out_file << tmp_syll->identity << "\t";
-    out_file << tmp_syll->contour_start << "\t";
-    out_file << tmp_syll->contour_direction << "\t";
-    out_file << tmp_syll->contour_extreme << "\n";
+    out_file << tmp_syll->start << " ";
+    out_file << tmp_syll->end << " ";
+    out_file << tmp_syll->identity << " ";
+    out_file << tmp_syll->contour_start << " ";
+    out_file << tmp_syll->contour_direction << " ";
+    out_file << tmp_syll->contour_extreme << std::endl;
   }
 }
