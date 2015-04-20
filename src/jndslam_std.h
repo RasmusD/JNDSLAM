@@ -21,8 +21,8 @@
 #include <stdexcept>
 #include <iostream>
 
-// Split a string based on a delimiter.
-std::vector<std::string> split_string(std::string str, char delim, bool empty=false);
+// Split a string based on a delimiter. Whitespace is default delimiter and you can optionally include empty splits.
+std::vector<std::string> split_string(std::string str, char delim=' ', bool empty=false);
 
 // Slice a vector of vector<string>.
 // Ignores out-of-range requests with an error.

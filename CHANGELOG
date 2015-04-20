@@ -1,3 +1,7 @@
+Version 0.31 20/4-2015:
+- Support for arbitrary delimiters in hts labs.
+- When using HTS_style labs delimiters MUST now be defined.
+
 Version 0.3 15/4-2015:
 - Supports arbitrary segment type (maximal size == full audio file) through simple space delimited input.
 - Changed output style to match simple input style, i.e. space delimited with style at end.

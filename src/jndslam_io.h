@@ -17,6 +17,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 #include <iostream>
 #include <stdexcept>
 #include <fstream>
@@ -42,7 +43,7 @@ std::vector<std::string> open_file(std::string filepath);
 void parse_est(typename utterance::utterance &utt, std::vector<std::string> &line_list);
 
 // Parse an HTS style label list and add sylls to an utterance
-void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> &line_list);
+void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> &line_list, std::vector<std::string> &delims);
 
 // Parse a simple space-delimited label list and add sylls to an utterance
 // Format for each line is:

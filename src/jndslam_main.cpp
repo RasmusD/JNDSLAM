@@ -19,7 +19,7 @@ void usage()
   std::cout << "Usage:" << std::endl;
   std::cout << "-a/--algorithm [alg]\tSpecify stylisation algorithm. Options: simplified, jndslam, slam. Default: simplified." << std::endl;
   std::cout << "-s/--nosmooth\tDo not smooth input f0 values." << std::endl;
-  std::cout << "-i/--intype [type]\tSpecify input type. Options: hts, simple. Default: simple." << std::endl;
+  std::cout << "-H/--hts [delims]\tUse HTS style input. Required argument is four strings separated by whitespace for left/right phone delimiter and left/right syllable context delimiters. E.g. \"leftphone rightphone leftsyll rightsyll\"" << std::endl;
   std::cout << "-l/--labdir [path]\tSpecify a custom .lab location. Default: data/simple_lab/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
   std::cout << "-p/--pitchdir [path]\tSpecify a custom .f0 location. Default: data/pitch/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
   std::cout << "-0/--outdir [path]\tSpecify a custom output location. Default: data/out/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
   struct global_args_t {
     bool smoothing;              // Are we smoothing?
     Style_Alg algorithm;              // Stylisation algorithm to use
+    std::vector<std::string> hts_delims;        // What type of input are we receiving?
     std::string lab_type;        // What type of input are we receiving?
     std::string lab_path;        // Where can we find the .lab files?
     std::string pitch_path;      // Where can we find the .f0 files?
@@ -51,7 +52,7 @@ int main(int argc, char *argv[])
   static const struct option long_opts[] = {
     { "algorithm", required_argument, NULL, 'a' }, // Algorithm to use
     { "nosmooth", no_argument, NULL, 's' }, // Do not perform smoothing
-    { "intype", required_argument, NULL, 'i' }, // Input type
+    { "hts", required_argument, NULL, 'H' }, //Use hts labs as input
     { "labdir", required_argument, NULL, 'l' }, // New lab dir
     { "pitchdir", required_argument, NULL, 'p' }, // New pitch dir
     { "outdir", required_argument, NULL, 'o' }, // New out dir
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
   };
   
   // Short options
-  static const char *opt_string = "a:si:l:p:o:h";
+  static const char *opt_string = "a:sH:l:p:o:h";
   
   // Parse command line options
   int long_index = 0;
@@ -90,20 +91,14 @@ int main(int argc, char *argv[])
       case 's':
         global_args.smoothing = false;
         break;
-      case 'i':
-        if (std::string(optarg) == "simple")
+      case 'H':
+        global_args.hts_delims = split_string(std::string(optarg));
+        if (global_args.hts_delims.size() != 4)
         {
-          global_args.lab_type = optarg;
-        }
-        else if (std::string(optarg) == "hts")
-        {
-          global_args.lab_type = optarg;
-        }
-        else
-        {
-          std::cout << "Invalid input type - " << optarg << ". Must be simple or hts." << std::endl;
+          std::cout << "Invalid hts delimiters - " << optarg << ". Must be exactly 4 space separated strings e.g. \"leftphone rightphone leftsyll rightsyll\"." << std::endl;
           usage();
         }
+        global_args.lab_type = "hts";
         break;
       case 'l':
         global_args.lab_path = std::string(optarg);
@@ -166,7 +161,7 @@ int main(int argc, char *argv[])
     }
     else if (global_args.lab_type == "hts")
     {
-      parse_hts_lab(utts[i], lab_files[i]);
+      parse_hts_lab(utts[i], lab_files[i], global_args.hts_delims);
     }
     else
     {

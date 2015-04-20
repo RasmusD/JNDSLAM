@@ -21,6 +21,6 @@ A few command line options exist use -h or --help to get the options.
 
 Simply replace the .f0 and .lab files with your own to use those. Please be aware that .f0 files are assumed to be in EST format.
 
-Input in HTS full-context label format is also supported. Sample files are in data/hts_lab/. Please note that the example .lab files may differ from the standard HTS implementation and only supports syllable stylisation. Support for arbitrary HTS full context label formats with options for other segment types is underway. If you wish to stylise other segments than syllables please use the simple_lab format.
+Input in HTS full-context label format is also supported. Sample files are in data/hts_lab/. To use the provided sample HTS labs run hts with the -hts option and specify the correct directory (i.e. ./jndslam --hts "- + : /" -l data/hts_lab/ for the sample labels). Please note that the example .lab files may differ from the standard HTS implementation and thus the delimiters may be different in your files. Only supports syllable stylisation. Support for other segmentations is underway. If you wish to stylise other segments than syllables please use the simple_lab format.
 
 Any issues please mail rasmus@dall.dk

@@ -14,7 +14,7 @@
 
 #include "jndslam_std.h"
 
-// Split a string on a delimiter. Optionally include empty splits.
+// Split a string on a delimiter. Optionally include empty splits, whitespace is default delimiter.
 std::vector<std::string> split_string(std::string str, char delim, bool empty)
 {
   std::stringstream ss(str);

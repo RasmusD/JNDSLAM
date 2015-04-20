@@ -121,8 +121,14 @@ void parse_est(typename utterance::utterance &utt, std::vector<std::string> &lin
 }
 
 // Parse a list of hts full-context phone labels and add syllables to an utt
-void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> &line_list)
+void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> &line_list, std::vector<std::string> &delims)
 {
+  //  Must be of right size
+  if (delims.size() != 4)
+  {
+    throw std::invalid_argument("Wrong number of delimiters for parse_hts_lab. Exiting.");
+  }
+  
   // For string splitting
   std::vector<std::string> tmp_vec;
   
@@ -142,7 +148,7 @@ void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> 
   for (int i = 0; i < line_list.size(); i++)
   {
     // Split it in times and context
-    tmp_vec = split_string(line_list[i], ' ');
+    tmp_vec = split_string(line_list[i]);
     // Just a silly check to make sure we're not trying something weird... which we are. this also gets rid of empty lines.
     if (tmp_vec.size() != 3)
     {
@@ -153,13 +159,13 @@ void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> 
     phone_end = std::atoi(tmp_vec[1].c_str());
     // Get the phone id
     std::string tmp_str = tmp_vec[2];
-    int start = tmp_str.find("-");
-    int end = tmp_str.find("+");
-    phone_id = tmp_str.substr(start+1, end-start-1);
+    int start = tmp_str.find(delims[0]);
+    int end = tmp_str.find(delims[1]);
+    phone_id = tmp_str.substr(start+delims[1].size(), end-start-1);
     // Get the syllable numbers
-    start = tmp_str.find(":");
-    end = tmp_str.find("/");
-    tmp_str = tmp_str.substr(start+1, end-start-1);
+    start = tmp_str.find(delims[2]);
+    end = tmp_str.find(delims[3]);
+    tmp_str = tmp_str.substr(start+delims[1].size(), end-start-1);
     phone_pos_beg = tmp_str.substr(0, 1);
     // We need the size thing here because of the 'xx' for silences
     phone_pos_end = tmp_str.substr(tmp_str.size()-1, 1);
