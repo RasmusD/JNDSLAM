@@ -29,6 +29,7 @@ public:
 	std::string contour_start;
 	std::string contour_direction;
 	std::string contour_extreme;
+	std::string contour_extreme_pos;
 };
 
 #endif

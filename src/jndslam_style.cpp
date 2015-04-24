@@ -63,6 +63,10 @@ void stylise(std::vector<typename utterance::utterance> &utts, Style_Alg algorit
       {
         style_slam(*tmp_syll);
       }
+      else if (algorithm == RAW)
+      {
+        style_raw(*tmp_syll);
+      }
       else
       {
         throw std::invalid_argument("This should never happen! The enum is - "+std::to_string(algorithm)+" - but it is not an option!");
@@ -444,6 +448,57 @@ void style_slam(typename syllable::syllable &syll)
   }
   // Add the final contour
   syll.contour_extreme = extreme;
+}
+
+
+// Style a segment outputting the raw values
+void style_raw(typename syllable::syllable &syll)
+{
+  // Apply label to start position
+  syll.contour_start = std::to_string(syll.pitch_values.front()[2]);
+  
+  
+  // Apply label to end position
+  syll.contour_direction = std::to_string(syll.pitch_values.back()[2]);
+  
+  // Apply label to extreme
+  float max = -1000;
+  int max_pos = -1;
+  float min = 1000;
+  int min_pos = -1;
+  float extreme_val = 0;
+  float extreme_pos = -1;
+  // Get max/min values and pos
+  for (int i = 0; i < syll.pitch_values.size(); i++)
+  {
+    if (syll.pitch_values.at(i)[2] > max)
+    {
+      max = syll.pitch_values.at(i)[2];
+      max_pos = i;
+    }
+    if (syll.pitch_values.at(i)[2] < min)
+    {
+      min = syll.pitch_values.at(i)[2];
+      min_pos = i;
+    }
+  }
+  // Find largest of max/min
+  if (abs(min) > max)
+  {
+    extreme_val = min;
+    extreme_pos = min_pos;
+  }
+  else
+  {
+    extreme_val = max;
+    extreme_pos = max_pos;
+  }
+  
+  // Find position in syllable
+  syll.contour_extreme_pos = std::to_string((float)extreme_pos / (float)syll.pitch_values.size());
+  
+  // Add raw value
+  syll.contour_extreme = std::to_string(extreme_val);
 }
 
 // Converts a semitone value into a 5 level register based on the split value

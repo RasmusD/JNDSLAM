@@ -1,7 +1,6 @@
 High priority:
 - Allow other segment types from hts_labs than syllable (i.e. user specified and e.g. phones)
 - Add option to output marked up HTS_lab if input was HTS_lab style.
-- Add "algorithm" which outputs the semitone values raw.
 
 Lower priority:
 - A check should be added in write_utt_to_file to make sure output file was succesfully opened.

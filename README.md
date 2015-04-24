@@ -1,13 +1,15 @@
 # JNDSLAM
 A method for automatic pitch contour stylisation
 
-This version 0.3 features:
+This version 0.4 features:
 
 A simple method for stylising pitch contours based on the Just Noticeable Difference in pitch.
 
 This offers both the JNDSLAM and Simplified JNDSLAM method as described in a paper submitted to Interspeech 2015 (Dall, R. & Gonzalvo, X. (2015). Automatic Stylisation and Labelling of Pitch Contour for Speech Synthesis. Submitted to Interspeech 2015, Dresden, Germany).
 
 It also offers the original SLAM method from Obin, N., Beliao, J., Veaux, C., & Lacheret, A. (2014). SLAM: Automatic Stylization and Labelling of Speech Melody. Speech Prosody 7, 246-250. Python implementation available at https://github.com/jbeliao/SLAM.
+
+Finally output can be given in raw semitone values. This outputs one extra value compared to the others which is the position of the extreme in the segment.
 
 To use:
 

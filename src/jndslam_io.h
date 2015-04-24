@@ -27,6 +27,7 @@
 
 #include "utterance.h"
 #include "jndslam_std.h"
+#include "jndslam_style.h"
 
 // Checks if a file exists
 bool file_exists(std::string &filename);
@@ -51,9 +52,9 @@ void parse_hts_lab(typename utterance::utterance &utt, std::vector<std::string> 
 void parse_simple_lab(typename utterance::utterance &utt, std::vector<std::string> &line_list);
 
 // Write out a file for each utterance with stylisations of each syllable line by line
-void write_utts_to_file(std::vector<typename utterance::utterance> &utts, std::string &out_path);
+void write_utts_to_file(std::vector<typename utterance::utterance> &utts, std::string &out_path, Style_Alg &algorithm);
 
 // Write out a file for a utterance with stylisations of each syllable line by line
-void write_utt_to_file(typename utterance::utterance &utts, std::string &out_path);
+void write_utt_to_file(typename utterance::utterance &utts, std::string &out_path,  Style_Alg &algorithm);
 
 #endif

@@ -228,16 +228,16 @@ void parse_simple_lab(typename utterance::utterance &utt, std::vector<std::strin
 
 
 // Write out a file for each utterance with stylisations of each syllable line by line
-void write_utts_to_file(std::vector<typename utterance::utterance> &utts,  std::string &out_path)
+void write_utts_to_file(std::vector<typename utterance::utterance> &utts,  std::string &out_path, Style_Alg &algorithm)
 {
   for (int i; i < utts.size(); i++)
   {
-    write_utt_to_file(utts[i], out_path);
+    write_utt_to_file(utts[i], out_path, algorithm);
   }
 }
 
 // Write out a file for a utterance with stylisations of each syllable line by line
-void write_utt_to_file(typename utterance::utterance &utt, std::string &out_path)
+void write_utt_to_file(typename utterance::utterance &utt, std::string &out_path, Style_Alg &algorithm)
 {
   std::ofstream out_file;
   // Note this won't work on windows. But I refuse to add e.g. Boost as a dependency just for safe path joining abilities.
@@ -250,6 +250,14 @@ void write_utt_to_file(typename utterance::utterance &utt, std::string &out_path
     out_file << tmp_syll->identity << " ";
     out_file << tmp_syll->contour_start << " ";
     out_file << tmp_syll->contour_direction << " ";
-    out_file << tmp_syll->contour_extreme << std::endl;
+    if (algorithm == RAW)
+    {
+      out_file << tmp_syll->contour_extreme << " ";
+      out_file << tmp_syll->contour_extreme_pos << std::endl;
+    }
+    else
+    {
+      out_file << tmp_syll->contour_extreme << std::endl;
+    }
   }
 }

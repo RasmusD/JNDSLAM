@@ -17,12 +17,12 @@
 void usage()
 {
   std::cout << "Usage:" << std::endl;
-  std::cout << "-a/--algorithm [alg]\tSpecify stylisation algorithm. Options: simplified, jndslam, slam. Default: simplified." << std::endl;
+  std::cout << "-a/--algorithm [alg]\tSpecify stylisation algorithm. Options: simplified, jndslam, slam, raw. Default: simplified." << std::endl;
   std::cout << "-s/--nosmooth\tDo not smooth input f0 values." << std::endl;
   std::cout << "-H/--hts [delims]\tUse HTS style input. Required argument is four strings separated by whitespace for left/right phone delimiter and left/right syllable context delimiters. E.g. \"leftphone rightphone leftsyll rightsyll\"" << std::endl;
   std::cout << "-l/--labdir [path]\tSpecify a custom .lab location. Default: data/simple_lab/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
   std::cout << "-p/--pitchdir [path]\tSpecify a custom .f0 location. Default: data/pitch/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
-  std::cout << "-0/--outdir [path]\tSpecify a custom output location. Default: data/out/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
+  std::cout << "-o/--outdir [path]\tSpecify a custom output location. Default: data/out/ NOTE! Dirs are not checked for correctness! This is not safe currently be careful!" << std::endl;
   std::cout << "-h/--help\tPrint this message." << std::endl;
   std::exit(0);
 }
@@ -82,9 +82,13 @@ int main(int argc, char *argv[])
         {
           global_args.algorithm = SLAM;
         }
+        else if (std::string(optarg) == "raw")
+        {
+          global_args.algorithm = RAW;
+        }
         else
         {
-          std::cout << "Invalid algorithm choice - " << optarg << ". Must be jndslam, slam or simplified." << std::endl;
+          std::cout << "Invalid algorithm choice - " << optarg << ". Must be jndslam, slam, raw or simplified." << std::endl;
           usage();
         }
         break;
@@ -165,7 +169,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-      throw std::invalid_argument("Input type is of urecognised type "+global_args.lab_type+". Exiting.");
+      throw std::invalid_argument("Input type is of unrecognised type "+global_args.lab_type+". Exiting.");
     }
   }
   
@@ -189,7 +193,7 @@ int main(int argc, char *argv[])
   stylise(utts, global_args.algorithm);
   
   // Write output stylisation
-  write_utts_to_file(utts, global_args.out_path);
+  write_utts_to_file(utts, global_args.out_path, global_args.algorithm);
   
   // Add style info to HTS lab and write lab
   // TODO
