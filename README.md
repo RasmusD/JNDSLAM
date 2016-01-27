@@ -5,7 +5,7 @@ This version 0.4 features:
 
 A simple method for stylising pitch contours based on the Just Noticeable Difference in pitch.
 
-This offers both the JNDSLAM and Simplified JNDSLAM method as described in a paper draft available upon request.
+This offers both the JNDSLAM and Simplified JNDSLAM method as described in a paper to be presented at Speech Prosody 2016.
 
 It also offers the original SLAM method from Obin, N., Beliao, J., Veaux, C., & Lacheret, A. (2014). SLAM: Automatic Stylization and Labelling of Speech Melody. Speech Prosody 7, 246-250. Python implementation available at https://github.com/jbeliao/SLAM.
 
